@@ -10,16 +10,16 @@ y consultas preparadas para prevenir inyección SQL.
 
 ## Tecnologías
 
-| Herramienta | Uso |
-|---|---|
-| Node.js 24 + npm | Entorno de ejecución |
-| Express | Servidor HTTP y enrutamiento |
-| mysql2/promise | Pool de conexiones y prepared statements |
-| dotenv | Variables de entorno (credenciales fuera del código) |
-| cors | Peticiones desde otros orígenes |
-| nodemon | Recarga automática en desarrollo |
-| MySQL (XAMPP) | Base de datos `db_lab10` |
-| Thunder Client | Pruebas de la API |
+| Herramienta           | Uso                                                  |
+| --------------------- | ---------------------------------------------------- |
+| Node.js 24 + npm      | Entorno de ejecución                                 |
+| Express               | Servidor HTTP y enrutamiento                         |
+| mysql2/promise        | Pool de conexiones y prepared statements             |
+| dotenv                | Variables de entorno (credenciales fuera del código) |
+| cors                  | Peticiones desde otros orígenes                      |
+| nodemon               | Recarga automática en desarrollo                     |
+| MySQL (XAMPP)         | Base de datos `db_lab10`                             |
+| REST Client (VS Code) | Pruebas de la API (`pruebas.http`)                   |
 
 ## Estructura
 
@@ -63,15 +63,15 @@ Servidor en `http://localhost:3000`. El archivo `.env` **no se sube** al reposit
 
 Base: `http://localhost:3000/api/productos` · Todas las respuestas son `Content-Type: application/json`.
 
-| Método | Ruta | Propósito | Éxito | Errores |
-|---|---|---|---|---|
-| GET | `/api/health` | Verificar que la API está activa | 200 | — |
-| GET | `/api/productos` | Listar los productos activos | 200 | 500 |
-| GET | `/api/productos/:id` | Obtener un producto por id | 200 | 400, 404, 500 |
-| POST | `/api/productos` | Crear un producto | 201 | 400, 500 |
-| PUT | `/api/productos/:id` | Actualizar un producto (total) | 200 | 400, 404, 500 |
-| DELETE | `/api/productos/:id` | Eliminación **lógica** (`activo = 0`) | 200 | 400, 404, 500 |
-| DELETE | `/api/productos/:id?tipo=fisica` | Eliminación **física** (borra la fila) | 200 | 400, 404, 500 |
+| Método | Ruta                             | Propósito                              | Éxito | Errores       |
+| ------ | -------------------------------- | -------------------------------------- | ----- | ------------- |
+| GET    | `/api/health`                    | Verificar que la API está activa       | 200   | —             |
+| GET    | `/api/productos`                 | Listar los productos activos           | 200   | 500           |
+| GET    | `/api/productos/:id`             | Obtener un producto por id             | 200   | 400, 404, 500 |
+| POST   | `/api/productos`                 | Crear un producto                      | 201   | 400, 500      |
+| PUT    | `/api/productos/:id`             | Actualizar un producto (total)         | 200   | 400, 404, 500 |
+| DELETE | `/api/productos/:id`             | Eliminación **lógica** (`activo = 0`)  | 200   | 400, 404, 500 |
+| DELETE | `/api/productos/:id?tipo=fisica` | Eliminación **física** (borra la fila) | 200   | 400, 404, 500 |
 
 ### Body de POST y PUT (JSON)
 
@@ -85,13 +85,13 @@ Base: `http://localhost:3000/api/productos` · Todas las respuestas son `Content
 }
 ```
 
-| Campo | Tipo | Regla |
-|---|---|---|
-| nombre | string | obligatorio, mínimo 2 caracteres |
-| descripcion | string | opcional |
-| precio | number | obligatorio, mayor a 0 |
-| stock | integer | opcional, entero ≥ 0 (por defecto 0) |
-| categoria | string | obligatorio |
+| Campo       | Tipo    | Regla                                |
+| ----------- | ------- | ------------------------------------ |
+| nombre      | string  | obligatorio, mínimo 2 caracteres     |
+| descripcion | string  | opcional                             |
+| precio      | number  | obligatorio, mayor a 0               |
+| stock       | integer | opcional, entero ≥ 0 (por defecto 0) |
+| categoria   | string  | obligatorio                          |
 
 ### Formato de errores
 
@@ -99,16 +99,16 @@ Base: `http://localhost:3000/api/productos` · Todas las respuestas son `Content
 { "error": "Producto no encontrado" }
 ```
 
-| Código | Cuándo |
-|---|---|
-| 400 | Datos inválidos, id no numérico o JSON mal formado |
-| 404 | El producto no existe o la ruta no existe |
-| 500 | Error del servidor o de la BD (no se envía el stack trace al cliente) |
+| Código | Cuándo                                                                |
+| ------ | --------------------------------------------------------------------- |
+| 400    | Datos inválidos, id no numérico o JSON mal formado                    |
+| 404    | El producto no existe o la ruta no existe                             |
+| 500    | Error del servidor o de la BD (no se envía el stack trace al cliente) |
 
 ## Decisiones técnicas
 
 - **Pool de conexiones:** reutiliza hasta 10 conexiones abiertas en lugar de abrir una por petición.
-- **`execute()` en vez de `query()`:** usa *prepared statements*; los valores viajan separados del SQL, por lo que un id como `1 OR 1=1` se trata como dato y no como código.
+- **`execute()` en vez de `query()`:** usa _prepared statements_; los valores viajan separados del SQL, por lo que un id como `1 OR 1=1` se trata como dato y no como código.
 - **Eliminación lógica vs física:** por defecto se marca `activo = 0` para conservar el historial; con `?tipo=fisica` se elimina la fila.
 - **Credenciales:** se leen de `.env` con dotenv; `.env` está en `.gitignore`.
 
