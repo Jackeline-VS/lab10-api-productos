@@ -1,0 +1,32 @@
+### 1. Listar productos → 200
+GET http://localhost:3000/api/productos
+
+### 2. Obtener un producto → 200
+GET http://localhost:3000/api/productos/1
+
+### 3. Crear producto → 201
+POST http://localhost:3000/api/productos
+Content-Type: application/json
+
+{"nombre":"Teclado Redragon","descripcion":"Mecanico RGB","precio":150,"stock":20,"categoria":"electronico"}
+
+### 4. Actualizar producto → 200
+PUT http://localhost:3000/api/productos/4
+Content-Type: application/json
+
+{"nombre":"Teclado Redragon K552","descripcion":"Mecanico RGB","precio":139.9,"stock":15,"categoria":"electronico"}
+
+### 5. Eliminar producto (lógico) → 200
+DELETE http://localhost:3000/api/productos/4
+
+### 6. Producto inexistente → 404
+GET http://localhost:3000/api/productos/999
+
+### 7. Datos inválidos → 400
+POST http://localhost:3000/api/productos
+Content-Type: application/json
+
+{"nombre":"","precio":-5}
+
+### 8. Error del servidor → 500 (detener MySQL en XAMPP antes)
+GET http://localhost:3000/api/productos
