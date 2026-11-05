@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { probarConexion } = require('./config/db');
+const productosRoutes = require('./routes/productosRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,11 +16,21 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ estado: 'ok', mensaje: 'API funcionando' });
 });
 
-// Aquí se montarán las rutas de productos (Paso 3)
+// Rutas del recurso productos
+app.use('/api/productos', productosRoutes);
 
 // 404 para cualquier ruta que no exista
 app.use((req, res) => {
   res.status(404).json({ error: 'Ruta no encontrada' });
+});
+
+// Manejador global de errores (JSON mal formado → 400; otros → 500 sin stack trace)
+app.use((err, req, res, next) => {
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).json({ error: 'El cuerpo de la petición no es un JSON válido' });
+  }
+  console.error(err);
+  res.status(500).json({ error: 'Error interno del servidor' });
 });
 
 async function iniciar() {
